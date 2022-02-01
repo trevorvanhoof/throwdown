@@ -5,9 +5,9 @@ Taking the fight to the establishment.
 ### Wat?
 I wanted a simple markdown interpreter in python and/or javascript to output html for my website. Python does not have a bug-free official distribution, javascript only has things you install through npm and I don't want to have anything to do with node and the 100 MB of dependencies you end up uploading to your FTP server in order to do the most basic tasks.
 
-So writing my own parser it is then eh? I tried to trudge through the markdown spec and had a heart attack at the complexity. 24722 words and 181 pages of complicated language explaining features I absolutely don't need.
+So writing my own parser it is then eh? I tried to trudge through the commonmark markdown spec and had a heart attack at the complexity. 24722 words and 181 pages of complicated language explaining features I absolutely don't need.
 
-I just want minimal, well defined, syntactical elements with maximum payoff, so here is *throwdown*. Taking the fight to the establishment to have a stupidly minimal markup language in both definition and capability.
+I just want minimal, well defined, syntactical elements with maximum payoff, so here is **throwdown**. Taking the fight to the establishment to have a stupidly minimal markup language in both definition and capability.
 
 ### Goals
 Keep it a subset for markdown so we can use existing IDEs & plugins.
