@@ -16,7 +16,7 @@ Given a piece of text we tokenize the following concepts:
 ```
 blank_line(s): (\r | \n | \r\n){2,}
 html tag: <.*?>
-code: `
+code: `[^`]*`
 italic: _
 bold: *
 heading: ^#+[ ]
@@ -39,9 +39,11 @@ Then, any token outside of a group gets merged into it's content, any consecutiv
 ```content group content content```
 The next step reduces the two content blocks into one:
 ```content group content```
-The above step shoiuld include html tags.
+The above step should include html tags.
 
-A final step is to remove the blank line tokens, because after this any consecutive content and/or group tokens are known unique paragraphs (or headers) so the blank lines are no longer necessary to imply this separation. 
+A final step is to remove the blank line tokens, but first we must make sure to merge consecutive group and content blocks,
+because after this any consecutive content and/or group tokens are known unique paragraphs (or headers) so the blank 
+lines are no longer necessary to imply this separation.
 
 #### Generation
 Then there is the generation step. We simply walk the resulting tokens and output a html document.
