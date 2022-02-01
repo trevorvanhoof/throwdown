@@ -62,3 +62,8 @@ Then there is the generation step. We simply walk the resulting tokens and outpu
   - code becomes &lt;code&gt;
 
 Write &lt;br/&gt; to insert single line breaks manually.
+
+### TODO
+
+Javascript parser
+Replace single ` code blocks with ``` code blocks to match markdown and be able to use existing editors better
