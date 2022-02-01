@@ -18,9 +18,9 @@ if USE_PYGMENTS:
 import re
 
 MULTIPLE_NEWLINES = re.compile(r'(\r|\n|\r\n){2,}')
-CODE = re.compile(r'`[^`]*`')
-ITALIC = re.compile(r'_')
-BOLD = re.compile(r'\*')
+CODE = re.compile(r'```.*?```', re.DOTALL)
+ITALIC = re.compile(r'^_|(?<!\\)_', re.MULTILINE)
+BOLD = re.compile(r'^\*|(?<!\\)\*', re.MULTILINE)
 HEADING = re.compile(r'^#+ ', re.MULTILINE)
 TAG = re.compile(r'<.*?>', re.DOTALL)
 ORDERED_TOKENS = [
@@ -160,7 +160,7 @@ def generateGroupHtml(text, groupedTokens):
         html = generateGroupHtml(text, groupedTokens[1])
     else:
         assert groupedTokens[1][2] == -1, 'We can only have groups or plain text at the center of groups'
-        html = text[groupedTokens[1][0]:groupedTokens[1][1]]
+        html = re.sub(r'\\(.)', r'\1', text[groupedTokens[1][0]:groupedTokens[1][1]], re.DOTALL)
     return f'<{tag}>{html}</{tag}>'
 
 
@@ -201,8 +201,8 @@ def generateHtml(text, tokens):
             code.append(f'<{tag}>{html}</{tag}>')
             index += 1
         elif token[2] == 2:
-            # + 1 & -1 are to strip the ` tokens
-            html = text[token[0] + 1:token[1] - 1]
+            # + 1 & -1 are to strip the ``` tokens
+            html = text[token[0] + 3:token[1] - 3]
             if USE_PYGMENTS:
                 # inject syntax highlighting
                 firstLine = html.split('\n', 1)[0].split('\r', 1)[0]
@@ -231,4 +231,6 @@ def convert(inPath, outPath):
 
 # Demo:
 # text = '# hello\n\n`*_test_*`\n\nHello *_this_* <br/> is a * star\n\n# '
+# print(tokenize(text))
+# print(parse(tokenize(text)))
 # print(generateHtml(text, parse(tokenize(text))))

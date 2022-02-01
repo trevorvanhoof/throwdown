@@ -15,20 +15,25 @@ Support HTML tags in line with text.
 Write a well defined  language spec in the manual to ease creating new interpreters for it.
 
 ### The spec
-TODO: I realized it is difficult to write non bold text between star characters, should we allow escape characters, and if so, how?
-TODO: Do we care about URLs, images and tables? How will we implement those? Maybe HTML is not the worst here?
 
 #### Tokenization
-Given a piece of text we tokenize the following concepts (these are regular expressions):
+Given a piece of text we tokenize the following concepts (these are regular expressions using DOTALL and MULTILINE modifiers):
 ```
 blank_line(s): (\r | \n | \r\n){2,}
 html tag: <.*?>
-code: `[^`]*`
-italic: _
-bold: *
+code: ```.*?```
+unescaped italic: ^_|(?<!\\)_
+unescaped bold: ^\*|(?<!\\)\*
 heading: ^#+[ ]
 ```
-anything else is added to a running total "content block".
+any characters inbetween matching tokens are flagged _content_.
+
+Content itself gets an additional treatment where we replace this regex
+```
+\\(?)
+```
+for escaped characters, with whatever was in the matched group.
+I currently do this in the generation stage but it could move to any stage.
 
 I am not sure if in the UTF8 2/3/4 byte characters any of these elements may match, so make sure to perform these single-characetr checks per unicode char, not per byte.
 
@@ -36,16 +41,26 @@ I am not sure if in the UTF8 2/3/4 byte characters any of these elements may mat
 We then have a parsing pass that tries to group matching tokens:
 
 In this example:
-```This *word* is bold but this* is wrong.```
+```
+This *word* is bold but this* is wrong.
+```
 We have the following tokens:
-```content, bold, content, bold, content, bold, content```
+```
+content, bold, content, bold, content, bold, content
+```
 The parser simply finds any content block surrounded by matching code|italic|bold neighbours, and then 'consumes' these neighbours so they can not be picked up more than once.
 Reading from left to right this means we get (note we search outwards from content recursively to support `*_content_*` notations, instead of holding on to the boundary tokens as soon as we encounter them):
-```content group content bold content```
+```
+content group content bold content
+```
 Then, any token outside of a group gets merged into it's content, any consecutive content gets merged into 1 content. The first step reduced the bold into it's left neighbour:
-```content group content content```
+```
+content group content content
+```
 The next step reduces the two content blocks into one:
-```content group content```
+```
+content group content
+```
 The above step should include html tags.
 
 A final step is to remove the blank line tokens, but first we must make sure to merge consecutive group and content blocks,
@@ -63,7 +78,6 @@ Then there is the generation step. We simply walk the resulting tokens and outpu
 
 Write &lt;br/&gt; to insert single line breaks manually.
 
-### TODO
+### TODO:
 
-Javascript parser
-Replace single ` code blocks with ``` code blocks to match markdown and be able to use existing editors better
+Consider bullet points and numbered lists, though the html is not super invasive.
