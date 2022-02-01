@@ -1,18 +1,25 @@
-# jackdown
-Who is mark?
+# Throwdown
+
+Taking the fight to the establishment.
 
 ### Wat?
+I wanted a simple markdown interpreter in python and/or javascript to output html for my website. Python does not have a bug-free official distribution, javascript only has things you install through npm and I don't want to have anything to do with node and the 100 MB of dependencies you end up uploading to your FTP server in order to do the most basic tasks.
 
-I tried to trudge through the markdown spec and had a heart attack at the complexity.
-I don't need a rich featureset, I just want minimal, well defined, syntactical elements with maximum payoff .
+So writing my own parser it is then eh? I tried to trudge through the markdown spec and had a heart attack at the complexity. 24722 words and 181 pages of complicated language explaining features I absolutely don't need.
+
+I just want minimal, well defined, syntactical elements with maximum payoff, so here is *throwdown*. Taking the fight to the establishment to have a stupidly minimal markup language in both definition and capability.
+
+### Goals
+Keep it a subset for markdown so we can use existing IDEs & plugins.
+Support HTML tags in line with text.
+Write a well defined  language spec in the manual to ease creating new interpreters for it.
 
 ### The spec
-
 TODO: I realized it is difficult to write non bold text between star characters, should we allow escape characters, and if so, how?
 TODO: Do we care about URLs, images and tables? How will we implement those? Maybe HTML is not the worst here?
 
 #### Tokenization
-Given a piece of text we tokenize the following concepts:
+Given a piece of text we tokenize the following concepts (these are regular expressions):
 ```
 blank_line(s): (\r | \n | \r\n){2,}
 html tag: <.*?>
