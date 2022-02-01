@@ -31,7 +31,7 @@ ORDERED_TOKENS = [
     BOLD,
     HEADING,
 ]
-
+REMOVE_ESCAPES = re.compile(r'\\(.)', re.DOTALL)
 
 def nxt(itr):
     for e in itr: return e
@@ -160,7 +160,7 @@ def generateGroupHtml(text, groupedTokens):
         html = generateGroupHtml(text, groupedTokens[1])
     else:
         assert groupedTokens[1][2] == -1, 'We can only have groups or plain text at the center of groups'
-        html = re.sub(r'\\(.)', r'\1', text[groupedTokens[1][0]:groupedTokens[1][1]], re.DOTALL)
+        html = REMOVE_ESCAPES.sub(r'\1', text[groupedTokens[1][0]:groupedTokens[1][1]])
     return f'<{tag}>{html}</{tag}>'
 
 
@@ -172,7 +172,7 @@ def generateContentHtml(text, token):
         return generateGroupHtml(text, token)
 
     assert token[2] == -1, 'parser output invalid token ' + str(token)
-    return text[token[0]:token[1]]
+    return REMOVE_ESCAPES.sub(r'\1', text[token[0]:token[1]])
 
 
 def generateHtml(text, tokens):
@@ -196,7 +196,7 @@ def generateHtml(text, tokens):
                 html = generateContentHtml(text, nextToken)
             else:
                 assert nextToken[2] == -1, 'parser output invalid token %s' % token
-                html = text[nextToken[0]:nextToken[1]]
+                html = REMOVE_ESCAPES.sub(r'\1', text[nextToken[0]:nextToken[1]])
             tag = f'h{(token.count("#") + 1)}'
             code.append(f'<{tag}>{html}</{tag}>')
             index += 1
