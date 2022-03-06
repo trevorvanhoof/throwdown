@@ -205,8 +205,10 @@ def generateHtml(text, tokens):
             html = text[token[0] + 3:token[1] - 3]
             if USE_PYGMENTS:
                 # inject syntax highlighting
-                firstLine = html.split('\n', 1)[0].split('\r', 1)[0]
+                firstLine = html.split('\n', 1)[0].split('\r', 1)[0].capitalize()
                 if firstLine + 'Lexer' in LEXERS:
+                    if firstLine == 'Cpp':
+                        firstLine = 'C++'
                     lexer = find_lexer_class(firstLine)()
                     html = highlight(html[len(firstLine):], lexer, HtmlFormatter())
                 else:
